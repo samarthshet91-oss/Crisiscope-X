@@ -1,0 +1,10 @@
+
+alert_id,event_type,location,severity,people_affected,status
+D001,Flood,Karnataka,High,1200,Active
+D002,Cyclone,Odisha,Critical,8500,Active
+D003,Wildfire,Karnataka,Medium,350,Monitoring
+D004,Earthquake,Assam,High,2100,Active
+D005,Landslide,Kerala,Medium,600,Monitoring
+D006,Flood,Assam,Critical,4200,Active
+D007,Wildfire,Maharashtra,Low,120,Monitoring
+D008,Cyclone,Tamil Nadu,High,3100,Active
