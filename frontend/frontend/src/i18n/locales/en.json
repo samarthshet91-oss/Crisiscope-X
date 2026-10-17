@@ -1,0 +1,133 @@
+{
+  "app": {
+    "title": "Crisiscope X",
+    "tagline": "AI for a Safer Tomorrow",
+    "theme": "Real-Time AI for Critical Decisions (Detect, Decide, Respond)",
+    "city": "Bengaluru, Karnataka",
+    "emergencyNotice": "In a real emergency, call 112 (emergency) or 108 (ambulance).",
+    "prototypeNotice": "Crisiscope X is a prototype. Scenario events are synthetic and risk scores are estimates. It does not show live street-level flood depth, real road closures or real hospital capacity, and it is not an emergency warning system."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "map": "Map",
+    "cascadeVision": "CascadeVision",
+    "alerts": "Alerts",
+    "riskAnalytics": "Risk analytics",
+    "impact": "Impact",
+    "responseLab": "Response Lab",
+    "evidence": "Evidence & data",
+    "reports": "Reports",
+    "settings": "Settings",
+    "openConsole": "Open the console",
+    "startDemo": "Start guided demo",
+    "comingLater": "Coming later"
+  },
+  "provenance": {
+    "observed": "Observed",
+    "synthetic": "Synthetic scenario",
+    "modelEstimate": "Model estimate",
+    "ruleBased": "Rule-based",
+    "tooltip": {
+      "observed": "Observed ground telemetry or gazetted government spatial record.",
+      "synthetic": "Simulated flood scenario injection for stress-testing.",
+      "modelEstimate": "Calculated by predictive hydrological and network algorithms.",
+      "ruleBased": "Deterministic routing rule or clearance protocol."
+    }
+  },
+  "modes": {
+    "replay": "Replay",
+    "liveSim": "Live simulation",
+    "mock": "Mock data"
+  },
+  "risk": {
+    "low": "Low",
+    "moderate": "Moderate",
+    "high": "High",
+    "severe": "Severe",
+    "modelEstimate": "Model estimate"
+  },
+  "decisionStrip": {
+    "topRecommendation": "Current recommendation",
+    "confidence": "Confidence",
+    "needsReview": "Needs human review",
+    "openLab": "Open Response Lab",
+    "freshness": "Input freshness",
+    "rainfall": "Rainfall",
+    "roads": "Roads",
+    "facilities": "Facilities",
+    "scenario": "Scenario"
+  },
+  "buttons": {
+    "runSimulation": "Run simulation",
+    "startReplay": "Start replay",
+    "pauseReplay": "Pause replay",
+    "compareOptions": "Compare options",
+    "resetScenario": "Reset scenario",
+    "viewDetails": "View details",
+    "applyReroute": "Apply reroute",
+    "downloadReport": "Download report",
+    "loadBenchmark": "Load benchmark results",
+    "skipStep": "Skip step",
+    "endDemo": "End demo"
+  },
+  "search": {
+    "placeholder": "Search ward, location or coordinates (Bengaluru only)"
+  },
+  "datasets": {
+    "title": "Real-time data sources",
+    "fresh": "Loaded and fresh",
+    "stale": "Stale",
+    "mock": "Mock data",
+    "notLoaded": "Not loaded",
+    "satelliteNote": "Satellite rainfall estimates cover about 10 km. They cannot show which street is flooded.",
+    "copernicusEmpty": "No suitable flood product loaded for this area.",
+    "ghslNote": "Estimate for a fixed period, not live population."
+  },
+  "cascade": {
+    "title": "CascadeVision",
+    "subtitle": "Trace disruption spread through connected corridors and emergency facilities",
+    "scenarioAssumptions": "Synthetic scenario parameters and assumptions",
+    "rainfallSlider": "Rainfall intensity",
+    "toggles": {
+      "roadDisruptions": "Road disruptions",
+      "rerouting": "Rerouting paths",
+      "infrastructure": "Infrastructure layer",
+      "population": "Population layer",
+      "replaySync": "Replay sync"
+    },
+    "simulationPanel": "Simulation control panel",
+    "spreadOrder": "Cascade progression",
+    "facilitiesReachable": "Facilities reachable within 30 min",
+    "before": "before",
+    "after": "after"
+  },
+  "lab": {
+    "title": "Counterfactual Response Lab",
+    "subtitle": "Compare baseline emergency posture against counterfactual interventions",
+    "table": {
+      "metric": "Evaluated metric",
+      "baseline": "Current baseline",
+      "recommended": "Recommended",
+      "travelTime": "Avg emergency travel time",
+      "accessibility": "Critical facility accessibility",
+      "demandServed": "Emergency demand served"
+    },
+    "whyThisOne": "Why this one",
+    "rationale": "Decision rationale",
+    "assumptions": "Underlying assumptions",
+    "tradeOffs": "Trade-offs and operational impacts",
+    "decisionTrace": "Decision trace",
+    "trustGate": "Trust gate & data validation",
+    "noBetterAlternative": "No alternative beats the baseline. Maintain current posture with elevated monitoring."
+  },
+  "alerts": {
+    "title": "Scenario alerts",
+    "banner": "Simulated alerts. Not official warnings.",
+    "filters": {
+      "all": "All",
+      "high": "High",
+      "moderate": "Moderate",
+      "low": "Low"
+    }
+  }
+}

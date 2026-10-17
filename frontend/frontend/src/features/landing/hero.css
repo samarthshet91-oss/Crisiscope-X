@@ -1,0 +1,525 @@
+/* =====================================================================
+   CRISISCOPE X — CINEMATIC HERO
+   Fixed composition measured from a 1353 x 1163 reference.
+   ONE custom property --u = one design pixel; every length is calc(N * var(--u)).
+   Everything is scoped under .sx so nothing leaks into the console.
+   ===================================================================== */
+
+.sx {
+  --font-serif: 'Prata', Georgia, serif;
+  --font-body: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-logo: 'Poppins', sans-serif;
+
+  --dw: 1353; --dh: 1163; --gutter: 25;
+  --u: max(min(.72px, calc(100vh / 700)), min(calc(100vw / 1353), calc(100vh / 1163)));
+  --dh-px: calc(1163 * var(--u));
+  --vshift: calc(max(0px, (100vh - var(--dh-px))) * .42);
+  --ink: #ffffff; --cyan: #79dce8; --cyan-logo: #5fd0e1;
+  --rule: rgba(255, 255, 255, .23); --btn-ink: #071227;
+  --e-expo: cubic-bezier(.16, 1, .3, 1);
+  --e-quint: cubic-bezier(.22, 1, .36, 1);
+  --e-slow: cubic-bezier(.4, 0, .2, 1);
+
+  position: relative; z-index: 10;
+  height: 100vh; overflow: hidden; isolation: isolate;
+  background: #04101f; color: var(--ink); font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+@supports (height: 100dvh) {
+  .sx {
+    --u: max(min(.72px, calc(100dvh / 700)), min(calc(100vw / 1353), calc(100dvh / 1163)));
+    --vshift: calc(max(0px, (100dvh - var(--dh-px))) * .42);
+    height: 100dvh;
+  }
+}
+.sx *, .sx *::before, .sx *::after { box-sizing: border-box; }
+.sx a { color: inherit; }
+
+/* ---------------------------------------------------------------- BACKDROP */
+.sx .sky { position: absolute; inset: 0; z-index: 0; background: #04101f; }
+.sx .sky .base {
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 90% at 50% 6%, #0c2650 0%, #061427 52%, #030a16 100%);
+}
+.sx .sky .tint {
+  position: absolute; inset: 0; opacity: 0; transition: opacity .22s linear; pointer-events: none;
+  background:
+    radial-gradient(58% 52% at 50% 64%, var(--tint), transparent 72%),
+    radial-gradient(36% 42% at 4% 72%, var(--tint), transparent 70%),
+    radial-gradient(36% 42% at 96% 72%, var(--tint), transparent 70%);
+}
+.sx .sky .tint.is-active { opacity: 1; }
+.sx .sky video {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  display: block; opacity: 0; transition: opacity .22s linear;
+}
+.sx .sky video.is-active { opacity: 1; }
+.sx .sky .scrim {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 58% 48% at 49% 40%, rgba(3, 10, 22, .80) 0%, rgba(3, 10, 22, .46) 56%, rgba(3, 10, 22, 0) 100%),
+    linear-gradient(180deg, rgba(3, 10, 22, .60) 0%, rgba(3, 10, 22, 0) 20%, rgba(3, 10, 22, 0) 76%, rgba(3, 10, 22, .70) 100%);
+}
+@media (prefers-reduced-motion: reduce) { .sx .sky video { display: none; } }
+
+/* ------------------------------------------- SIDE SLOTS (two slots, not two planets) */
+.sx .planet {
+  position: absolute; z-index: -1; padding: 0; border: 0; background: none;
+  -webkit-appearance: none; appearance: none; line-height: 0; cursor: pointer;
+  pointer-events: auto; /* .copy disables pointers wholesale */
+  transition: transform .45s cubic-bezier(.22, 1, .36, 1);
+}
+.sx .planet img, .sx .planet .orb { display: none; width: 100%; height: auto; }
+.sx .planet img.is-shown, .sx .planet .orb.is-shown { display: block; }
+.sx .planet:hover { transform: scale(1.045); }
+.sx .planet:active { transform: scale(.99); }
+.sx .planet-l { width: calc(143 * var(--u)); left: calc(-69.5 * var(--u)); top: calc(-38.3 * var(--u)); }
+.sx .planet-r { width: calc(143 * var(--u)); right: calc(-64.7 * var(--u)); top: calc(-40.6 * var(--u)); }
+@media (prefers-reduced-motion: reduce) {
+  .sx .planet { transition: none; }
+  .sx .planet:hover, .sx .planet:active { transform: none; }
+}
+
+/* ------------------------------------------------ BUILT-IN ORB ARTWORK (CSS only)
+   Stand-ins for photographic cut-outs: ~97% of the square box, like the reference. */
+.sx .orb {
+  position: relative; aspect-ratio: 1 / 1; width: 97%; margin: 1.5%;
+  border-radius: 50%; overflow: hidden; isolation: isolate;
+  box-shadow: 0 0 calc(46 * var(--u)) var(--glow, rgba(121, 220, 232, .3));
+}
+.sx .orb::after { /* specular + terminator shading, shared by all orbs */
+  content: ""; position: absolute; inset: 0; border-radius: 50%; z-index: 3; pointer-events: none;
+  background:
+    radial-gradient(circle at 30% 23%, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 24%),
+    radial-gradient(circle at 68% 76%, rgba(0, 0, 0, 0) 42%, rgba(0, 0, 0, .58) 100%);
+  box-shadow:
+    inset 0 0 0 calc(1.5 * var(--u)) rgba(255, 255, 255, .16),
+    inset calc(-10 * var(--u)) calc(-14 * var(--u)) calc(30 * var(--u)) rgba(0, 0, 0, .42);
+}
+.sx .orb > i { position: absolute; display: block; }
+.sx .orb svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; display: block; }
+
+/* DETECT — rain radar */
+.sx .orb--radar {
+  --glow: rgba(76, 201, 240, .38);
+  background: radial-gradient(circle at 38% 32%, #2f86ff 0%, #0f4bb8 34%, #072463 66%, #030d2b 100%);
+}
+.sx .orb--radar::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; border-radius: 50%;
+  background:
+    radial-gradient(circle at 63% 36%, #fff 0 1.4%, rgba(121, 220, 232, 0) 3.6%),
+    radial-gradient(circle at 36% 62%, #fff 0 1.1%, rgba(121, 220, 232, 0) 3.2%),
+    radial-gradient(circle at 71% 67%, #b8f3ff 0 1%, rgba(121, 220, 232, 0) 2.8%),
+    repeating-radial-gradient(circle at 50% 50%, rgba(121, 220, 232, 0) 0 13%, rgba(121, 220, 232, .4) 13.4% 14.3%, rgba(121, 220, 232, 0) 14.7% 25%);
+}
+.sx .orb--radar > i {
+  inset: 0; z-index: 2; border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(121, 220, 232, 0) 0deg, rgba(121, 220, 232, 0) 280deg, rgba(121, 220, 232, .6) 360deg);
+  animation: sx-spin 5s linear infinite;
+}
+
+/* DECIDE — response routes */
+.sx .orb--graph {
+  --glow: rgba(46, 230, 197, .36);
+  background: radial-gradient(circle at 38% 32%, #27d9c8 0%, #0c8d93 34%, #064a5c 66%, #021b27 100%);
+}
+.sx .orb--graph .route { stroke-dasharray: 3.2 2.4; animation: sx-dash 2.2s linear infinite; }
+
+/* RESPOND — dispatch sonar */
+.sx .orb--pulse {
+  --glow: rgba(255, 180, 84, .38);
+  background: radial-gradient(circle at 38% 32%, #ffcb6b 0%, #f2762e 34%, #a3202f 66%, #2b0716 100%);
+}
+.sx .orb--pulse::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 7%; aspect-ratio: 1; z-index: 2;
+  margin: -3.5% 0 0 -3.5%; border-radius: 50%; background: #fff; box-shadow: 0 0 calc(18 * var(--u)) rgba(255, 255, 255, .9);
+}
+.sx .orb--pulse > i {
+  left: 50%; top: 50%; width: 22%; aspect-ratio: 1; margin: -11% 0 0 -11%; z-index: 2; border-radius: 50%;
+  border: calc(2 * var(--u)) solid rgba(255, 255, 255, .8); opacity: 0;
+  animation: sx-ping 3s cubic-bezier(.2, .7, .3, 1) infinite;
+}
+.sx .orb--pulse > i + i { animation-delay: 1.5s; }
+
+@keyframes sx-spin { to { transform: rotate(360deg); } }
+@keyframes sx-dash { to { stroke-dashoffset: -11.2; } }
+@keyframes sx-ping { 0% { transform: scale(.3); opacity: .95; } 100% { transform: scale(4.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .sx .orb--radar > i, .sx .orb--graph .route, .sx .orb--pulse > i { animation: none; }
+  .sx .orb--pulse > i { display: none; }
+}
+
+/* ------------------------------------------------------------------- LAYOUT */
+.sx .ui { position: absolute; inset: 0; z-index: 3; }
+.sx .copy { position: absolute; inset: 0; transform: translateY(var(--vshift)); pointer-events: none; }
+.sx .copy a { pointer-events: auto; }
+.sx .col { position: absolute; left: 0; right: calc(var(--gutter) * var(--u)); text-align: center; }
+
+/* ---------------------------------------------------------------------- NAV */
+.sx .navbar { position: absolute; top: 0; left: 0; right: 0; z-index: 6; height: calc(88 * var(--u)); background: none; }
+.sx .navbar::after {
+  content: ""; position: absolute; left: calc(25 * var(--u)); right: calc(49 * var(--u));
+  top: calc(86 * var(--u)); height: calc(2 * var(--u)); background: var(--rule);
+}
+.sx .navrow {
+  position: absolute; left: calc(25 * var(--u)); right: calc(49 * var(--u)); top: 0;
+  height: calc(86 * var(--u)); display: flex; align-items: center; justify-content: space-between;
+}
+.sx .logo {
+  font-family: var(--font-logo); font-weight: 600; font-size: calc(18.4 * var(--u));
+  letter-spacing: calc(-.15 * var(--u)); line-height: 1; color: #fff; text-decoration: none;
+  white-space: nowrap; position: relative; top: calc(-1 * var(--u));
+}
+.sx .logo i { font-style: normal; color: var(--cyan-logo); }
+.sx .burger {
+  display: none; position: relative; width: calc(46 * var(--u)); height: calc(46 * var(--u));
+  padding: 0; border: 0; background: none; cursor: pointer; flex-direction: column;
+  align-items: center; justify-content: center; gap: calc(6 * var(--u)); flex: none;
+}
+.sx .burger span {
+  display: block; width: calc(24 * var(--u)); height: calc(2 * var(--u));
+  border-radius: calc(2 * var(--u)); background: #fff;
+  transition: transform .28s cubic-bezier(.4, 0, .2, 1), opacity .18s linear;
+}
+.sx .navrow[data-open="true"] .burger span:nth-child(1) { transform: translateY(calc(8 * var(--u))) rotate(45deg); }
+.sx .navrow[data-open="true"] .burger span:nth-child(2) { opacity: 0; }
+.sx .navrow[data-open="true"] .burger span:nth-child(3) { transform: translateY(calc(-8 * var(--u))) rotate(-45deg); }
+.sx .links { display: flex; align-items: center; }
+.sx .links a {
+  position: relative; display: flex; align-items: center; height: calc(86 * var(--u));
+  font-size: calc(18.4 * var(--u)); font-weight: 400; line-height: 1; color: #fff;
+  text-decoration: none; padding: 0 calc(17.5 * var(--u));
+  letter-spacing: calc(-1 * var(--u)); white-space: nowrap;
+}
+.sx .links a[aria-current="page"]::after {
+  content: ""; position: absolute; left: 0; right: 0; top: calc(83.5 * var(--u));
+  height: calc(4 * var(--u)); background: var(--cyan); border-radius: calc(1 * var(--u));
+}
+.sx .links a:nth-child(2) { margin-left: calc(24 * var(--u)); }
+.sx .links a:nth-child(3) { margin-left: calc(26 * var(--u)); }
+.sx .links a:nth-child(4) { margin-left: calc(27 * var(--u)); }
+.sx .links a.enroll {
+  margin-left: calc(28.5 * var(--u)); width: calc(107 * var(--u)); height: calc(38 * var(--u));
+  border-radius: calc(19 * var(--u)); display: flex; align-items: center; justify-content: center;
+  font-size: calc(17 * var(--u)); font-weight: 600; letter-spacing: calc(-.75 * var(--u)); line-height: 1;
+  color: var(--btn-ink); text-decoration: none; padding-top: calc(2 * var(--u));
+  background: linear-gradient(180deg, #ffffff 0%, #d8ecfe 9%, #dceefe 72%, #f4f9ff 100%);
+  box-shadow: 0 calc(3 * var(--u)) calc(14 * var(--u)) rgba(255, 255, 255, .22),
+              inset 0 0 0 calc(1.5 * var(--u)) rgba(255, 255, 255, .92);
+  flex: none;
+}
+
+/* ---------------------------------------------------------------- HERO COPY */
+.sx .eyebrow {
+  top: calc(188.8 * var(--u)); font-size: calc(30.45 * var(--u)); font-weight: 500; line-height: 1;
+  letter-spacing: calc(4 * var(--u)); text-indent: calc(4 * var(--u)); color: #fff;
+}
+.sx h1.title {
+  top: calc(268 * var(--u)); font-family: var(--font-serif); font-weight: 400;
+  font-size: calc(112.4 * var(--u)); line-height: 1; letter-spacing: calc(2 * var(--u));
+  text-indent: calc(2 * var(--u)); color: #fff;
+}
+.sx .rule { top: calc(405.5 * var(--u)); height: calc(5 * var(--u)); font-size: 0; line-height: 0; padding-right: calc(2 * var(--u)); }
+.sx .rule span {
+  display: inline-block; vertical-align: top; width: calc(100 * var(--u)); height: 100%;
+  border-radius: calc(2.5 * var(--u)); background: var(--cyan);
+}
+.sx p.lede {
+  top: calc(433.2 * var(--u)); font-size: calc(18.36 * var(--u)); font-weight: 400;
+  line-height: calc(30 * var(--u)); color: rgba(255, 255, 255, .95);
+}
+
+/* ------------------------------------------------------------------ CTA ROW */
+.sx .cta { top: calc(597 * var(--u)); height: calc(66 * var(--u)); isolation: isolate; }
+.sx .cta a {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: calc(210 * var(--u)); height: calc(60 * var(--u)); border-radius: calc(30 * var(--u));
+  font-size: calc(15.5 * var(--u)); font-weight: 700; letter-spacing: 0; text-indent: 0;
+  line-height: 1; color: var(--btn-ink); text-decoration: none; padding: 0 calc(20 * var(--u));
+  background: linear-gradient(180deg, #ffffff 0%, #d6e8f8 4%, #d9ecfe 72%, #ffffff 100%);
+  box-shadow: 0 calc(10 * var(--u)) calc(18 * var(--u)) calc(-8 * var(--u)) rgba(255, 255, 255, .50),
+              0 0 calc(26 * var(--u)) rgba(255, 255, 255, .18),
+              inset 0 0 0 calc(2 * var(--u)) rgba(255, 255, 255, .9);
+  transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+}
+.sx .cta a.hero-primary-cta {
+  background: linear-gradient(180deg, #ffffff 0%, #cae8ff 50%, #90cdff 100%);
+  color: #030d22;
+  box-shadow: 0 calc(8 * var(--u)) calc(24 * var(--u)) rgba(0, 240, 255, .35),
+              0 0 calc(18 * var(--u)) rgba(56, 189, 248, .3),
+              inset 0 0 0 calc(1.5 * var(--u)) rgba(255, 255, 255, .95);
+}
+.sx .cta a.hero-primary-cta:hover {
+  transform: translateY(calc(-2 * var(--u))) scale(1.02);
+  box-shadow: 0 calc(12 * var(--u)) calc(28 * var(--u)) rgba(0, 240, 255, .5);
+}
+.sx .cta a.hero-secondary-cta {
+  background: rgba(8, 22, 50, 0.75);
+  color: #e2e8f0;
+  border: calc(1.5 * var(--u)) solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 calc(4 * var(--u)) calc(14 * var(--u)) rgba(2, 6, 13, .5);
+  backdrop-filter: blur(calc(8 * var(--u)));
+  -webkit-backdrop-filter: blur(calc(8 * var(--u)));
+}
+.sx .cta a.hero-secondary-cta:hover {
+  transform: translateY(calc(-2 * var(--u)));
+  border-color: rgba(56, 189, 248, 0.85);
+  background: rgba(12, 34, 76, 0.88);
+  color: #ffffff;
+}
+.sx .label {
+  position: absolute; top: calc(33 * var(--u)); font-family: var(--font-serif); font-weight: 400;
+  font-size: calc(17.8 * var(--u)); letter-spacing: calc(4.6 * var(--u)); line-height: 1;
+  color: #fff; white-space: nowrap;
+}
+.sx .label.label-l { left: calc(111 * var(--u)); }
+.sx .label.label-r { right: calc(104 * var(--u)); }
+
+/* ----------------------------------------------------------- SCROLL CONTROL */
+.sx .scroll {
+  position: absolute; z-index: 4; left: 50%;
+  margin-left: calc((-48 - (var(--gutter) / 2)) * var(--u)); bottom: calc(68 * var(--u));
+  width: calc(96 * var(--u)); height: calc(96 * var(--u)); border-radius: 50%;
+  background: rgba(24, 30, 42, .70); -webkit-backdrop-filter: blur(calc(6 * var(--u)));
+  backdrop-filter: blur(calc(6 * var(--u))); border: 0; display: flex; align-items: center;
+  justify-content: center; cursor: pointer; padding: 0;
+}
+.sx .scroll svg { width: calc(20 * var(--u)); height: calc(25 * var(--u)); display: block; }
+
+/* -------------------------------------------------------------------- FOCUS */
+.sx .scroll:focus-visible, .sx .links a:focus-visible, .sx .enroll:focus-visible,
+.sx .cta a:focus-visible, .sx .logo:focus-visible, .sx .burger:focus-visible {
+  outline: calc(2 * var(--u)) solid var(--cyan); outline-offset: calc(3 * var(--u));
+}
+.sx .planet:focus-visible { outline: calc(2 * var(--u)) solid var(--cyan); outline-offset: calc(6 * var(--u)); border-radius: 50%; }
+
+/* =====================================================================
+   RESPONSIVE — six tiers, in this exact source order
+   ===================================================================== */
+
+/* A) NAV COLLAPSE — the SAME <a> elements re-compose into a panel */
+@media (max-width: 1030px), (max-height: 620px) {
+  .sx .navrow { left: calc(25 * var(--u)); right: calc(25 * var(--u)); }
+  .sx .burger { display: flex; }
+  .sx .links {
+    position: absolute; top: calc(96 * var(--u)); right: 0; z-index: 5;
+    width: min(calc(324 * var(--u)), calc(100vw - 50 * var(--u)));
+    flex-direction: column; align-items: stretch; padding: calc(12 * var(--u));
+    border-radius: calc(20 * var(--u)); background: rgba(9, 21, 42, .84);
+    -webkit-backdrop-filter: blur(calc(18 * var(--u))); backdrop-filter: blur(calc(18 * var(--u)));
+    border: calc(1 * var(--u)) solid rgba(255, 255, 255, .14);
+    box-shadow: 0 calc(18 * var(--u)) calc(44 * var(--u)) rgba(2, 8, 20, .55);
+    opacity: 0; visibility: hidden; transform: translateY(calc(-10 * var(--u)));
+    transition: opacity .24s ease, transform .28s cubic-bezier(.4, 0, .2, 1), visibility .28s;
+  }
+  .sx .navrow[data-open="true"] .links { opacity: 1; visibility: visible; transform: none; }
+  .sx .links a:nth-child(n) {
+    margin-left: 0; height: auto; justify-content: flex-start;
+    padding: calc(14 * var(--u)) calc(16 * var(--u)); font-size: calc(19 * var(--u));
+    letter-spacing: calc(-.6 * var(--u));
+  }
+  .sx .links a + a { border-top: calc(1 * var(--u)) solid rgba(255, 255, 255, .08); }
+  .sx .links a[aria-current="page"]::after {
+    top: auto; bottom: calc(9 * var(--u)); left: calc(16 * var(--u)); right: auto;
+    width: calc(26 * var(--u)); height: calc(3 * var(--u));
+  }
+  .sx .links a.enroll {
+    margin: calc(14 * var(--u)) 0 calc(2 * var(--u)); width: 100%; height: calc(46 * var(--u));
+    border-radius: calc(23 * var(--u)); justify-content: center; padding-top: calc(2 * var(--u));
+    font-size: calc(18 * var(--u)); letter-spacing: calc(-.4 * var(--u)); border-top: 0;
+  }
+  .sx .links a.enroll::after { content: none; }
+}
+
+/* B) TABLET — centred symmetric composition, re-proportioned (NOT stacked) */
+@media (min-width: 580px) and (max-width: 1030px) and (min-height: 621px) {
+  .sx {
+    --gutter: 0;
+    --u: min(max(min(.85px, calc(100vh / 780)), min(calc(100vw / 900), calc(100vh / 1163))), 1.15px);
+    --dh-px: calc(1120 * var(--u));
+    --vshift: calc(max(0px, (100vh - var(--dh-px))) * .38);
+  }
+  @supports (height: 100dvh) {
+    .sx {
+      --u: min(max(min(.85px, calc(100dvh / 780)), min(calc(100vw / 900), calc(100dvh / 1163))), 1.15px);
+      --vshift: calc(max(0px, (100dvh - var(--dh-px))) * .38);
+    }
+  }
+  .sx .navbar::after { left: calc(25 * var(--u)); right: calc(25 * var(--u)); }
+  .sx p.lede br { display: none; }
+  .sx p.lede { max-width: calc(620 * var(--u)); margin-left: auto; margin-right: auto; text-wrap: pretty; }
+  .sx .label.label-r { right: calc(116 * var(--u)); }
+}
+
+/* C) PHONE — below the nav the interface FLOWS instead of being pinned */
+@media (max-width: 579px), (max-height: 620px) {
+  .sx {
+    --gutter: 0;
+    --u: max(min(.92px, calc(100vh / 620)), min(calc(100vw / 430), calc(100vh / 880)));
+    --dh-px: calc(880 * var(--u));
+    --vshift: calc(max(0px, (100vh - var(--dh-px))) * .34);
+  }
+  @supports (height: 100dvh) {
+    .sx {
+      --u: max(min(.92px, calc(100dvh / 620)), min(calc(100vw / 430), calc(100dvh / 880)));
+      --vshift: calc(max(0px, (100dvh - var(--dh-px))) * .34);
+    }
+  }
+  .sx .navbar { height: calc(76 * var(--u)); }
+  .sx .navbar::after { left: calc(24 * var(--u)); right: calc(24 * var(--u)); top: calc(74 * var(--u)); }
+  .sx .navrow { left: calc(24 * var(--u)); right: calc(24 * var(--u)); height: calc(74 * var(--u)); }
+  .sx .links { top: calc(84 * var(--u)); }
+  .sx .copy {
+    top: calc(76 * var(--u)); display: flex; flex-direction: column; align-items: center;
+    padding: calc(56 * var(--u)) calc(26 * var(--u)) 0;
+  }
+  .sx .col { position: static; width: 100%; right: auto; }
+  .sx .eyebrow { font-size: calc(20 * var(--u)); letter-spacing: calc(5 * var(--u)); text-indent: calc(5 * var(--u)); }
+  .sx h1.title { font-size: min(calc(86 * var(--u)), 19vw); margin-top: calc(15 * var(--u)); }
+  .sx h1.title.is-long { font-size: min(calc(66 * var(--u)), 14.5vw); }
+  .sx .rule { margin-top: calc(20 * var(--u)); height: calc(5 * var(--u)); padding-right: 0; }
+  .sx .rule span { width: calc(84 * var(--u)); }
+  .sx p.lede {
+    margin-top: calc(19 * var(--u)); font-size: calc(15.5 * var(--u)); line-height: calc(26 * var(--u));
+    max-width: calc(400 * var(--u)); text-wrap: balance;
+  }
+  .sx p.lede br { display: none; }
+  .sx .cta { top: auto; margin-top: calc(32 * var(--u)); height: calc(60 * var(--u)); position: relative; }
+  .sx .cta a { width: calc(190 * var(--u)); height: calc(60 * var(--u)); border-radius: calc(30 * var(--u)); }
+  .sx .label { top: 50%; transform: translateY(-50%); font-size: calc(16 * var(--u)); letter-spacing: calc(4 * var(--u)); }
+  .sx .label.label-l { left: calc(56 * var(--u)); }
+  .sx .label.label-r { right: calc(60 * var(--u)); }
+  .sx .planet-l { width: calc(89 * var(--u)); left: calc(-44.5 * var(--u)); top: calc(-17 * var(--u)); }
+  .sx .planet-r { width: calc(89 * var(--u)); right: calc(-44.5 * var(--u)); top: calc(-18.3 * var(--u)); }
+  .sx .scroll {
+    width: calc(74 * var(--u)); height: calc(74 * var(--u)); margin-left: calc(-37 * var(--u)); bottom: calc(49 * var(--u));
+  }
+  .sx .scroll svg { width: calc(15.5 * var(--u)); height: calc(19.5 * var(--u)); }
+}
+
+/* D) no room for the scroll control */
+@media (max-height: 660px) { .sx .scroll { display: none; } }
+
+/* E) SHORT */
+@media (max-height: 620px) {
+  .sx {
+    --u: max(min(.85px, calc(100vh / 470)), min(calc(100vw / 640), calc(100vh / 560)));
+    --dh-px: calc(560 * var(--u)); --vshift: 0px;
+  }
+  @supports (height: 100dvh) {
+    .sx { --u: max(min(.85px, calc(100dvh / 470)), min(calc(100vw / 640), calc(100dvh / 560))); }
+  }
+  .sx .copy { padding-top: calc(26 * var(--u)); }
+  .sx h1.title { font-size: min(calc(64 * var(--u)), 19vw); margin-top: calc(8 * var(--u)); }
+  .sx h1.title.is-long { font-size: min(calc(52 * var(--u)), 14.5vw); }
+  .sx .rule { margin-top: calc(12 * var(--u)); }
+  .sx p.lede { margin-top: calc(12 * var(--u)); }
+  .sx .cta { margin-top: calc(20 * var(--u)); }
+  .sx .label { top: 50%; transform: translateY(-50%); font-size: calc(15 * var(--u)); }
+  .sx .label.label-l { left: calc(58 * var(--u)); }
+  .sx .label.label-r { right: calc(58 * var(--u)); }
+}
+@media (min-width: 821px) and (max-height: 660px) { .sx .copy { transform: none; } }
+
+/* F) NARROW PHONE — declared LAST so it wins inside tier E.
+   The label / button / label triad can no longer share a line. */
+@media (max-width: 500px) {
+  .sx .label { top: calc(100% + 34 * var(--u)); transform: none; font-size: calc(15 * var(--u)); }
+  .sx .label.label-l { left: calc(6 * var(--u)); }
+  .sx .label.label-r { right: calc(6 * var(--u)); }
+}
+
+@media (prefers-reduced-motion: reduce) { .sx .links, .sx .burger span { transition: none; } }
+
+/* =====================================================================
+   ENTRANCE ANIMATION — runs once, then the .anim / .play classes are removed
+   draw · reveal · rise · settle · fade
+   ===================================================================== */
+@keyframes sx-reveal { from { transform: translateY(115%); } to { transform: translateY(0); } }
+@keyframes sx-rise { from { opacity: 0; transform: translateY(var(--rise, 10px)); } to { opacity: 1; transform: none; } }
+@keyframes sx-settle { from { opacity: 0; transform: translateY(var(--rise, 8px)) scale(.965); } to { opacity: 1; transform: none; } }
+@keyframes sx-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes sx-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.sx .ent-mask, .sx .ent-line { display: block; }
+.sx.anim .ent-mask { overflow: hidden; padding-top: .18em; margin-top: -.18em; }
+.sx.anim .ent-line { transform: translateY(115%); will-change: transform; }
+.sx.anim .navbar::after, .sx.anim .links a[aria-current="page"]::after, .sx.anim .rule span { transform: scaleX(0); }
+.sx.anim .logo, .sx.anim .links a, .sx.anim .burger, .sx.anim p.lede, .sx.anim .label,
+.sx.anim .cta a, .sx.anim .scroll, .sx.anim .sky { opacity: 0; }
+.sx.anim .sky { will-change: opacity; }
+
+.sx.anim.play .sky { animation: sx-fade 1.6s var(--e-slow) .25s both; }
+.sx.anim.play .navbar::after { animation: sx-draw .9s var(--e-expo) .12s both; transform-origin: center; }
+.sx.anim.play .logo { --rise: calc(8 * var(--u)); animation: sx-rise .6s var(--e-quint) .20s both; }
+.sx.anim.play .links a { --rise: calc(8 * var(--u)); animation: sx-rise .55s var(--e-quint) both; }
+.sx.anim.play .links a:nth-child(1) { animation-delay: .26s; }
+.sx.anim.play .links a:nth-child(2) { animation-delay: .31s; }
+.sx.anim.play .links a:nth-child(3) { animation-delay: .36s; }
+.sx.anim.play .links a:nth-child(4) { animation-delay: .41s; }
+.sx.anim.play .links a.enroll, .sx.anim.play .burger { --rise: calc(8 * var(--u)); animation: sx-settle .6s var(--e-quint) .46s both; }
+.sx.anim.play .links a[aria-current]::after { animation: sx-draw .55s var(--e-expo) .60s both; transform-origin: left; }
+.sx.anim.play .eyebrow .ent-line { animation: sx-reveal .75s var(--e-expo) .30s both; }
+.sx.anim.play h1.title .ent-line { animation: sx-reveal .95s var(--e-expo) .44s both; }
+.sx.anim.play .rule span { animation: sx-draw .65s var(--e-expo) .78s both; transform-origin: center; }
+.sx.anim.play p.lede { --rise: calc(12 * var(--u)); animation: sx-rise .7s var(--e-quint) .86s both; }
+.sx.anim.play .label.label-l { --rise: calc(8 * var(--u)); animation: sx-rise .6s var(--e-quint) 1.04s both; }
+.sx.anim.play .label.label-r { --rise: calc(8 * var(--u)); animation: sx-rise .6s var(--e-quint) 1.10s both; }
+.sx.anim.play .cta a { --rise: calc(8 * var(--u)); animation: sx-settle .7s var(--e-quint) 1.14s both; }
+.sx.anim.play .scroll { animation: sx-settle .6s var(--e-quint) 1.42s both; }
+
+/* The mobile nav panel is `.links`; never let the entrance dim it while it is open. */
+.sx.anim .navrow[data-open="true"] .links { opacity: 1; }
+
+/* Scene swap — a short rise as copy changes (post-entrance only; leaves no residue) */
+.sx .sx-swap { --rise: calc(10 * var(--u)); animation: sx-rise .5s var(--e-quint) both; }
+@media (prefers-reduced-motion: reduce) { .sx .sx-swap { animation: none; } }
+
+/* =====================================================================
+   OPENING SHOT — Earth in space -> dive through the clouds -> flood city
+   ===================================================================== */
+.sx .earth-intro {
+  position: absolute; inset: 0; z-index: 5; overflow: hidden; background: #02060d;
+  transition: opacity .75s var(--e-slow);
+}
+.sx .earth-intro.is-leaving { opacity: 0; pointer-events: none; }
+.sx .earth-canvas { position: absolute; inset: 0; opacity: 0; animation: sx-fade 1s ease .05s forwards; }
+.sx .earth-wash {
+  position: absolute; inset: 0; opacity: 0; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, #ffffff 0%, #e4f2ff 55%, #a9cff5 100%);
+}
+.sx .intro-cap {
+  position: absolute; left: 0; right: 0; bottom: calc(118 * var(--u)); padding: 0 6%;
+  text-align: center; pointer-events: none; opacity: 0;
+  font-family: var(--font-serif); font-weight: 400; line-height: 1.3; color: #fff;
+  font-size: min(calc(22 * var(--u)), 3.6vw); letter-spacing: min(calc(9 * var(--u)), 1.7vw);
+  text-indent: min(calc(9 * var(--u)), 1.7vw); text-shadow: 0 0 24px rgba(2, 6, 13, .85);
+}
+.sx .intro-cap.c1 { animation: sx-cap 2.1s ease .45s both; }
+.sx .intro-cap.c2 { animation: sx-cap 1.9s ease 2.45s both; }
+.sx .intro-skip {
+  position: absolute; z-index: 2; right: calc(49 * var(--u)); bottom: calc(40 * var(--u));
+  padding: calc(10 * var(--u)) calc(20 * var(--u)); border-radius: calc(30 * var(--u)); cursor: pointer;
+  font: 600 min(calc(13 * var(--u)), 3.2vw) / 1 var(--font-body); letter-spacing: .18em; color: rgba(255, 255, 255, .85);
+  background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .28);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  opacity: 0; animation: sx-fade .5s ease 1s forwards, sx-out .4s ease 4.2s forwards;
+}
+.sx .intro-skip:hover { background: rgba(255, 255, 255, .16); }
+.sx .intro-skip:focus-visible { outline: calc(2 * var(--u)) solid var(--cyan); outline-offset: calc(3 * var(--u)); }
+@keyframes sx-cap {
+  0% { opacity: 0; transform: translateY(8px); } 18% { opacity: .95; transform: none; }
+  80% { opacity: .95; } 100% { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes sx-out { to { opacity: 0; } }
+
+/* After the dive the city is already on screen: no second fade-in of the sky. */
+.sx.sx--intro.anim .sky { opacity: 1; }
+.sx.sx--intro.anim.play .sky { animation: none; }
+/* Side slots arrive with the rest of the UI instead of sitting under the overlay. */
+.sx.anim .planet { opacity: 0; }
+.sx.anim.play .planet { animation: sx-fade .8s var(--e-slow) .9s both; }
+
+@media (prefers-reduced-motion: reduce) { .sx .earth-intro { display: none; } }
+
