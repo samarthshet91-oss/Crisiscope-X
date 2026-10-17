@@ -1,0 +1,99 @@
+
+{
+  "schema_version": "1.0",
+  "scenario_id": "BLR-FLOOD-DEMO-001",
+  "name": "Bengaluru Flood Response Demonstration",
+  "description": "A small synthetic scenario for testing road disruptions and emergency accessibility.",
+  "provenance": {
+    "scenario_type": "synthetic",
+    "is_live_data": false,
+    "geographic_validation": "not_verified",
+    "notice": "All network identifiers, travel times, rainfall values, facility statuses and demand values are illustrative. They do not represent current Bengaluru conditions."
+  },
+  "rainfall": {
+    "value_mm": 120.0,
+    "duration_hours": 3.0,
+    "source_type": "synthetic_assumption"
+  },
+  "nodes": [
+    {
+      "id": "N1",
+      "name": "Origin",
+      "latitude": 12.9700,
+      "longitude": 77.5900
+    },
+    {
+      "id": "N2",
+      "name": "Junction A",
+      "latitude": 12.9750,
+      "longitude": 77.5950
+    },
+    {
+      "id": "N3",
+      "name": "Junction B",
+      "latitude": 12.9800,
+      "longitude": 77.6000
+    },
+    {
+      "id": "N4",
+      "name": "Response Hub",
+      "latitude": 12.9850,
+      "longitude": 77.6050
+    }
+  ],
+  "roads": [
+    {
+      "id": "R1",
+      "from": "N1",
+      "to": "N2",
+      "travel_time_minutes": 5.0,
+      "status": "open"
+    },
+    {
+      "id": "R2",
+      "from": "N2",
+      "to": "N4",
+      "travel_time_minutes": 5.0,
+      "status": "open"
+    },
+    {
+      "id": "R3",
+      "from": "N1",
+      "to": "N3",
+      "travel_time_minutes": 8.0,
+      "status": "open"
+    },
+    {
+      "id": "R4",
+      "from": "N3",
+      "to": "N4",
+      "travel_time_minutes": 8.0,
+      "status": "open"
+    }
+  ],
+  "facilities": [
+    {
+      "id": "F1",
+      "name": "Synthetic Emergency Response Hub",
+      "node_id": "N4",
+      "facility_type": "emergency_response",
+      "status": "available"
+    }
+  ],
+  "demand": [
+    {
+      "id": "D1",
+      "node_id": "N1",
+      "demand_units": 20,
+      "source_type": "synthetic_assumption"
+    }
+  ],
+  "events": [
+    {
+      "id": "E1",
+      "type": "road_disruption",
+      "target_id": "R2",
+      "value": "closed"
+    }
+  ]
+}
