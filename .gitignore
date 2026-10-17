@@ -12,3 +12,5 @@ data/outputs/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/outputs/.gitkeep
+frontend/node_modules/
+frontend/dist/
