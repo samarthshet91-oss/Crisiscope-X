@@ -1,0 +1,10 @@
+pandas>=2.2,<4
+numpy>=1.26,<3
+geopandas>=1.0,<2
+pyogrio>=0.9,<1
+shapely>=2.0,<3
+networkx>=3.2,<4
+SQLAlchemy>=2.0,<3
+psycopg[binary]>=3.2,<4
+pytest>=8,<10
+python-dotenv>=1.0,<2
