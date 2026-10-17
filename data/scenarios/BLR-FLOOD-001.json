@@ -1,0 +1,45 @@
+{
+  "scenario_id": "BLR-FLOOD-001",
+  "scenario_name": "Illustrative Bengaluru urban flood response",
+  "city": "Bengaluru",
+  "hazard": "urban_flooding",
+  "data_mode": "synthetic",
+  "scenario_payload": {
+    "created_at_utc": "2026-10-17T00:00:00+00:00",
+    "source_type": "synthetic",
+    "illustrative_rainfall": {
+      "amount_mm": 85,
+      "duration_hours": 3,
+      "source_type": "synthetic"
+    },
+    "intervention_concepts": [
+      "consider_alternative_route",
+      "consider_alternative_facility"
+    ],
+    "limitations": "Demonstration values; no real road closure or facility capacity is asserted."
+  },
+  "events": [
+    {
+      "event_id": "BLR-FLOOD-001-E01",
+      "event_type": "road_disruption",
+      "asset_id": null,
+      "severity": "high",
+      "source_type": "synthetic",
+      "event_payload": {
+        "asset_match": "unmatched_placeholder",
+        "description": "Illustrative disruption only; no real road is identified as closed."
+      }
+    },
+    {
+      "event_id": "BLR-FLOOD-001-E02",
+      "event_type": "facility_capacity_reduction",
+      "asset_id": null,
+      "severity": "medium",
+      "source_type": "synthetic",
+      "event_payload": {
+        "asset_match": "unmatched_placeholder",
+        "description": "Illustrative capacity change only; no facility or capacity is asserted."
+      }
+    }
+  ]
+}
