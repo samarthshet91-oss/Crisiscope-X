@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="data-explorer-view">
+  <div class="card" style="margin-bottom: 20px;">
+    <div class="card-header">
+      <div>
+        <h2 style="font-size: 18px; margin-bottom: 4px;">Data Explorer & Ingestion Pipeline</h2>
+        <p style="font-size: 12px; color: var(--text-muted);">
+          Inspect benchmark spatial datasets, import CSV / GeoJSON telemetric observations, and validate schema integrity.
+        </p>
+      </div>
+      <span class="badge badge-cyan">PostgreSQL / In-Memory Validator</span>
+    </div>
+
+    <!-- Drag & Drop Upload Zone -->
+    <div style="background:var(--bg-secondary); border:2px dashed var(--border-color); border-radius:8px; padding:28px; text-align:center; margin-bottom:20px; transition:border-color 0.2s ease;" id="file-upload-dropzone">
+      <input type="file" id="file-upload-input" accept=".csv,.json,.geojson" style="display:none;" />
+      <div style="font-size:28px; margin-bottom:8px;">📁</div>
+      <div style="font-size:14px; font-weight:700; color:var(--text-heading); margin-bottom:4px;">
+        Click to select or drag and drop dataset files here
+      </div>
+      <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+        Supports CSV (rainfall, sensors), JSON, and GeoJSON (road networks, catchment polygons).
+      </div>
+      <div id="selected-filename-display" style="display:none; margin-bottom:12px; font-weight:700; color:var(--accent-cyan); font-family:monospace; font-size:12px;"></div>
+      <button id="btn-submit-upload" class="btn btn-primary btn-sm">
+        Upload & Validate Dataset
+      </button>
+    </div>
+
+    <!-- Dataset Registry Table -->
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div style="padding:14px 16px; border-bottom:1px solid var(--border-color); font-weight:700; font-size:13px;">
+        Registered Spatial & Hydrological Datasets
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Dataset Identifier & Name</th>
+              <th>Format</th>
+              <th>Records</th>
+              <th>Classification</th>
+              <th>Validation Status</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody id="dataset-registry-tbody">
+            <!-- Populated by data_explorer.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Validation Modal -->
+<div id="upload-result-modal" class="modal-backdrop">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <div style="font-weight:700; font-size:14px;">Dataset Validation Report</div>
+      <button id="btn-close-upload-modal" class="btn btn-sm btn-secondary" style="padding:2px 8px;">&times;</button>
+    </div>
+    <div id="upload-result-body" class="modal-body">
+      <!-- Populated dynamically -->
+    </div>
+    <div class="modal-footer">
+      <button onclick="document.getElementById('upload-result-modal').classList.remove('open')" class="btn btn-primary btn-sm">
+        Close Report
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}

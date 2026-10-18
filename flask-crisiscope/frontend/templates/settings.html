@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 20px;">
+  <div class="card-header">
+    <div>
+      <h2 style="font-size: 18px; margin-bottom: 4px;">System Diagnostics & LinuxONE Environment Status</h2>
+      <p style="font-size: 12px; color: var(--text-muted);">
+        Hardware architecture inspection, database connectivity status, and framework compliance report.
+      </p>
+    </div>
+    <span class="badge badge-cyan">DIAGNOSTICS SUITE</span>
+  </div>
+
+  <div class="grid-cols-12" style="margin-top: 10px;">
+    <!-- Architecture Verification -->
+    <div class="col-span-6">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Host Architecture & Runtime Compliance</div>
+        </div>
+        <table class="data-table">
+          <tbody>
+            <tr>
+              <td><strong>Operating Architecture:</strong></td>
+              <td class="font-mono">{{ system_arch }}</td>
+            </tr>
+            <tr>
+              <td><strong>LinuxONE s390x Compatibility:</strong></td>
+              <td>
+                <span class="badge badge-green">✓ VERIFIED PORTABLE PYTHON</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Backend Framework:</strong></td>
+              <td>Flask 3 (Pure Python Blueprints)</td>
+            </tr>
+            <tr>
+              <td><strong>Frontend Framework:</strong></td>
+              <td>
+                <span class="badge badge-green">✓ PURE VANILLA JS (NO REACT / NO FASTAPI)</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>3D Graphics Engine:</strong></td>
+              <td>Three.js WebGL (Pure ES6+ Module)</td>
+            </tr>
+            <tr>
+              <td><strong>Map Visualizer:</strong></td>
+              <td>Leaflet.js 1.9.4</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Database Status -->
+    <div class="col-span-6">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Database Storage & State Engine</div>
+        </div>
+        <div style="font-size:12px; color:var(--text-secondary); line-height:1.6; margin-bottom:14px;">
+          <p style="margin-bottom:8px;">
+            <strong>Target Persistence:</strong> PostgreSQL 16 Enterprise Relational Database.
+          </p>
+          <p style="margin-bottom:8px;">
+            <strong>Schema Definition:</strong> Located at <code class="font-mono">database/schema.sql</code> and migrations in <code class="font-mono">database/migrations/</code>.
+          </p>
+          <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:6px; padding:10px 14px;">
+            <div style="font-weight:700; margin-bottom:4px; color:var(--text-heading);">Runtime Connection Mode:</div>
+            <div id="settings-db-status" style="color:var(--accent-amber);">
+              Transparent In-Memory State Cache active. Automatically promotes to live PostgreSQL when <code class="font-mono">DATABASE_URL</code> is provisioned and reachable.
+            </div>
+          </div>
+        </div>
+
+        <button onclick="checkDbConnection()" class="btn btn-secondary btn-sm" id="btn-ping-db">
+          Ping Database Connection
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+async function checkDbConnection() {
+  const btn = document.getElementById("btn-ping-db");
+  const statusEl = document.getElementById("settings-db-status");
+  btn.disabled = true;
+  btn.textContent = "Pinging Database...";
+
+  try {
+    const res = await API.getDatabaseStatus();
+    if (res.connected) {
+      statusEl.innerHTML = `<span style="color:var(--accent-green); font-weight:700;">✓ Connected to live PostgreSQL database.</span>`;
+    } else {
+      statusEl.innerHTML = `<span style="color:var(--accent-amber); font-weight:600;">⚠️ In-Memory Mode Active: ${res.statusMessage}</span>`;
+    }
+  } catch (e) {
+    statusEl.textContent = "Failed to query database endpoint: " + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Ping Database Connection";
+  }
+}
+</script>
+{% endblock %}

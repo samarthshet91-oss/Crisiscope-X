@@ -1,0 +1,43 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cx-shield-grad" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="50%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+    <radialGradient id="cx-radar-pulse" cx="50" cy="50" r="45" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.4" />
+      <stop offset="70%" stop-color="#06b6d4" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Shield Silhouette Outline -->
+  <path d="M50 8 L85 22 V50 C85 71 70 88 50 94 C30 88 15 71 15 50 V22 Z"
+        fill="url(#cx-radar-pulse)"
+        stroke="url(#cx-shield-grad)"
+        stroke-width="3.5"
+        stroke-linejoin="round" />
+
+  <!-- Concentric Radar Ring Outer -->
+  <circle cx="50" cy="46" r="28" stroke="#38bdf8" stroke-width="1.75" stroke-dasharray="4 3" opacity="0.8" />
+
+  <!-- Concentric Radar Ring Inner -->
+  <circle cx="50" cy="46" r="16" stroke="#06b6d4" stroke-width="1.5" opacity="0.9" />
+
+  <!-- Crosshair & Intelligence Network Lines -->
+  <line x1="50" y1="22" x2="50" y2="70" stroke="#06b6d4" stroke-width="1.5" opacity="0.6" />
+  <line x1="26" y1="46" x2="74" y2="46" stroke="#06b6d4" stroke-width="1.5" opacity="0.6" />
+
+  <!-- Connected Network Sensor Nodes -->
+  <circle cx="50" cy="28" r="3" fill="#38bdf8" />
+  <circle cx="70" cy="46" r="3" fill="#38bdf8" />
+  <circle cx="30" cy="46" r="3" fill="#38bdf8" />
+
+  <!-- Location Marker & Epicenter Core -->
+  <path d="M50 36 C44.5 36 40 40.5 40 46 C40 52 50 63 50 63 C50 63 60 52 60 46 C60 40.5 55.5 36 50 36 Z"
+        fill="#06b6d4"
+        stroke="#f0f9ff"
+        stroke-width="1.5" />
+  <circle cx="50" cy="45" r="2.8" fill="#ffffff" />
+</svg>
