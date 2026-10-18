@@ -1,0 +1,486 @@
+
+<!doctype html>
+<html lang="en" data-theme="dark" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>CRISISCOPE X — AI Disaster Intelligence Platform</title>
+  <meta name="description" content="Urban flood scenario intelligence, cascade dependency analysis, what-if simulations, and verifiable ML risk analytics for IBM Z Datathon 2026." />
+  <meta property="og:title" content="CRISISCOPE X — AI Disaster Intelligence Platform" />
+  <meta property="og:description" content="Urban flood scenario intelligence, cascade dependency analysis, what-if simulations, and verifiable ML risk analytics for IBM Z Datathon 2026." />
+  <meta property="og:type" content="website" />
+
+  <!-- Initialize theme -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("crisiscope_theme");
+        var theme = saved === "light" || saved === "dark"
+          ? saved
+          : "dark";
+
+        document.documentElement.classList.remove("light", "dark");
+        document.documentElement.classList.add(theme);
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Hide intro immediately if already played this session -->
+  <script>
+    (function () {
+      try {
+        if (sessionStorage.getItem("crisiscope_intro_seen") === "1") {
+          document.documentElement.classList.add("intro-seen");
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Vendor styles -->
+  <link rel="stylesheet" href="/static/vendor/leaflet.css" />
+  <link rel="stylesheet" href="/static/vendor/maplibre-gl.css" />
+
+  <!-- Application styles -->
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <link rel="stylesheet" href="/static/css/themes.css" />
+  <link rel="stylesheet" href="/static/css/layout.css" />
+  <link rel="stylesheet" href="/static/css/components.css" />
+  <link rel="stylesheet" href="/static/css/pages.css" />
+
+  <!-- Intro styles -->
+  <style>
+    #crisiscope-intro {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #030711;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 650ms ease, visibility 650ms ease;
+    }
+
+    #crisiscope-intro.intro-fading {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #crisiscope-intro.intro-hidden {
+      display: none !important;
+    }
+
+    html.intro-seen #crisiscope-intro {
+      display: none !important;
+    }
+
+    #crisiscope-intro video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #030711;
+    }
+
+    #crisiscope-intro .intro-controls {
+      position: absolute;
+      right: 24px;
+      bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      z-index: 2;
+    }
+
+    #crisiscope-intro .intro-btn {
+      padding: 11px 17px;
+      border: 1px solid rgba(53, 217, 255, 0.7);
+      border-radius: 8px;
+      background: rgba(5, 17, 32, 0.92);
+      color: #e8faff;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 180ms ease, border-color 180ms ease;
+    }
+
+    #crisiscope-intro .intro-btn:hover {
+      background: #10334a;
+      border-color: #35d9ff;
+    }
+
+    #crisiscope-intro .intro-btn:focus-visible {
+      outline: 2px solid #35d9ff;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 600px) {
+      #crisiscope-intro .intro-controls {
+        right: 12px;
+        bottom: 12px;
+        gap: 8px;
+      }
+
+      #crisiscope-intro .intro-btn {
+        padding: 9px 12px;
+        font-size: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #crisiscope-intro {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- CRISISCOPE X original intro video -->
+  <div id="crisiscope-intro" aria-label="Crisiscope X introduction">
+
+    <video
+      id="crisiscope-video"
+      autoplay
+      muted
+      playsinline
+      preload="auto"
+      aria-label="Crisiscope X intro animation"
+    >
+      <source
+        src="/static/videos/CrisiscopeX.mp4"
+        type="video/mp4"
+      />
+      Your browser does not support HTML5 video.
+    </video>
+
+    <div class="intro-controls">
+      <button
+        id="intro-sound-btn"
+        class="intro-btn"
+        type="button"
+        aria-pressed="false"
+      >
+        Enable Sound
+      </button>
+
+      <button
+        id="intro-skip-btn"
+        class="intro-btn"
+        type="button"
+      >
+        Skip Intro →
+      </button>
+    </div>
+  </div>
+
+  <!-- Existing application shell -->
+  <div class="app-shell">
+
+    <!-- Persistent Left Navigation Sidebar -->
+    <aside class="app-sidebar">
+
+      <div class="sidebar-header">
+        <img
+          src="/static/assets/crisiscope-logo.svg"
+          alt="Logo"
+          style="width:34px; height:34px;"
+        />
+
+        <div>
+          <div class="sidebar-brand-title">
+            <span>CRISISCOPE</span>
+            <span style="color:var(--accent-cyan);">X</span>
+          </div>
+
+          <div class="sidebar-brand-subtitle">
+            LinuxONE &bull; s390x Engine
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <div class="nav-section-title">Core Intelligence</div>
+
+        <a href="/command-center"
+           class="nav-item {% if active_tab == 'command_center' %}active{% endif %}">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Command Center</span>
+        </a>
+
+        <a href="/digital-twin"
+           class="nav-item {% if active_tab == 'digital_twin' %}active{% endif %}">
+          <span class="nav-icon">🗺️</span>
+          <span class="nav-label">Digital Twin Lab</span>
+        </a>
+
+        <a href="/cascade-vision"
+           class="nav-item {% if active_tab == 'cascade_vision' %}active{% endif %}">
+          <span class="nav-icon">🌐</span>
+          <span class="nav-label">Cascade Vision 3D</span>
+          <span class="nav-badge">Three.js</span>
+        </a>
+
+        <div class="nav-section-title">Analytics & Risks</div>
+
+        <a href="/alerts"
+           class="nav-item {% if active_tab == 'alerts_incidents' %}active{% endif %}">
+          <span class="nav-icon">🚨</span>
+          <span class="nav-label">Alerts & Incidents</span>
+        </a>
+
+        <a href="/risk-analytics"
+           class="nav-item {% if active_tab == 'risk_analytics' %}active{% endif %}">
+          <span class="nav-icon">🧠</span>
+          <span class="nav-label">ML Risk Analytics</span>
+        </a>
+
+        <a href="/impact-assessment"
+           class="nav-item {% if active_tab == 'impact_assessment' %}active{% endif %}">
+          <span class="nav-icon">⚡</span>
+          <span class="nav-label">Impact Assessment</span>
+        </a>
+
+        <div class="nav-section-title">Operations & Data</div>
+
+        <a href="/response-lab"
+           class="nav-item {% if active_tab == 'response_lab' %}active{% endif %}">
+          <span class="nav-icon">🛡️</span>
+          <span class="nav-label">Response Lab</span>
+        </a>
+
+        <a href="/data-explorer"
+           class="nav-item {% if active_tab == 'data_explorer' %}active{% endif %}">
+          <span class="nav-icon">📁</span>
+          <span class="nav-label">Data Explorer</span>
+        </a>
+
+        <a href="/evidence-trust"
+           class="nav-item {% if active_tab == 'evidence_trust' %}active{% endif %}">
+          <span class="nav-icon">📜</span>
+          <span class="nav-label">Evidence & Trust</span>
+        </a>
+
+        <a href="/settings"
+           class="nav-item {% if active_tab == 'settings' %}active{% endif %}">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">System Diagnostics</span>
+        </a>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span>Target Architecture</span>
+          <span class="badge badge-cyan font-mono" style="font-size:10px;">
+            {{ system_arch }}
+          </span>
+        </div>
+
+        <div style="font-size:10px; color:var(--text-muted);">
+          Zero React &bull; Zero FastAPI
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Main Workspace Container -->
+    <div class="app-main-container">
+
+      <!-- Executive Operations Top-Bar -->
+      <header class="app-header">
+
+        <div class="header-left">
+          <div class="header-breadcrumbs">
+            <span style="font-weight:700; color:var(--text-heading);">
+              CRISISCOPE X
+            </span>
+
+            <span style="color:var(--text-muted);">&bull;</span>
+
+            <span style="color:var(--accent-cyan); font-weight:600;">
+              {{ active_tab | replace('_', ' ') | title }}
+            </span>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:6px; font-size:12px; background:var(--bg-secondary); padding:4px 10px; border-radius:6px; border:1px solid var(--border-color);">
+            <span style="color:var(--text-muted);">Scenario:</span>
+            <strong id="header-scenario-name" style="color:var(--text-heading);">
+              {{ active_scenario.name }}
+            </strong>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button
+            class="theme-toggle-btn btn btn-secondary btn-sm"
+            title="Switch Theme"
+          >
+            <span class="theme-icon"></span>
+            <span class="theme-label">Theme</span>
+          </button>
+        </div>
+
+      </header>
+
+      <!-- Scrollable Main Stage -->
+      <main class="app-stage bg-grid-pattern">
+        <div class="stage-inner">
+          {% block content %}{% endblock %}
+        </div>
+      </main>
+
+      <!-- Operational Status Footer -->
+      <footer class="app-footer">
+
+        <div style="display:flex; align-items:center; gap:12px;">
+          <strong style="color:var(--text-heading);">CRISISCOPE X</strong>
+          <span>&bull;</span>
+          <span style="color:var(--accent-cyan);">{{ tagline }}</span>
+          <span>&bull;</span>
+          <span id="footer-arch-status" class="font-mono">
+            IBM LinuxONE / s390x Ready
+          </span>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:14px;">
+          <span id="footer-db-status" class="font-mono" style="font-size:11px;">
+            Checking Database...
+          </span>
+          <span>&bull;</span>
+          <a href="/evidence-trust" style="font-size:11px;">
+            Compliance & Audit
+          </a>
+        </div>
+
+      </footer>
+    </div>
+  </div>
+
+  <!-- Existing vendor scripts -->
+  <script src="/static/vendor/leaflet.js"></script>
+  <script src="/static/vendor/maplibre-gl.js"></script>
+  <script src="/static/vendor/three.min.js"></script>
+  <script src="/static/vendor/OrbitControls.js"></script>
+  <script src="/static/vendor/chart.min.js"></script>
+
+  <!-- Existing application scripts -->
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/theme.js"></script>
+  <script src="/static/js/emergency_controller.js"></script>
+  <script src="/static/js/map.js"></script>
+  <script src="/static/js/cascade_vision.js"></script>
+  <script src="/static/js/alerts.js"></script>
+  <script src="/static/js/risk_analytics.js"></script>
+  <script src="/static/js/impact_assessment.js"></script>
+  <script src="/static/js/response_lab.js"></script>
+  <script src="/static/js/data_explorer.js"></script>
+  <script src="/static/js/app.js"></script>
+
+  <!-- Intro playback controller -->
+  <script>
+    (function () {
+      const intro = document.getElementById("crisiscope-intro");
+      const video = document.getElementById("crisiscope-video");
+      const skipButton = document.getElementById("intro-skip-btn");
+      const soundButton = document.getElementById("intro-sound-btn");
+
+      if (!intro || !video || !skipButton || !soundButton) {
+        return;
+      }
+
+      let finished = false;
+
+      function finishIntro() {
+        if (finished) return;
+        finished = true;
+
+        try {
+          sessionStorage.setItem("crisiscope_intro_seen", "1");
+        } catch (e) {}
+
+        document.documentElement.classList.add("intro-seen");
+        video.pause();
+
+        intro.classList.add("intro-fading");
+
+        window.setTimeout(function () {
+          intro.classList.add("intro-hidden");
+        }, 700);
+      }
+
+      skipButton.addEventListener("click", finishIntro);
+
+      video.addEventListener("ended", finishIntro);
+
+      // Do not leave the user trapped if the video fails.
+      video.addEventListener("error", finishIntro);
+
+      soundButton.addEventListener("click", function () {
+        if (finished) return;
+
+        if (video.paused) {
+          video.play().then(function () {
+            video.muted = false;
+            video.volume = 1;
+            soundButton.textContent = "Mute Sound";
+            soundButton.setAttribute("aria-pressed", "true");
+          }).catch(function () {
+            soundButton.textContent = "Sound Unavailable";
+          });
+
+          return;
+        }
+
+        video.muted = !video.muted;
+        video.volume = 1;
+
+        soundButton.textContent = video.muted
+          ? "Enable Sound"
+          : "Mute Sound";
+
+        soundButton.setAttribute(
+          "aria-pressed",
+          String(!video.muted)
+        );
+      });
+
+      // Skip playback on subsequent page loads in the same session.
+      try {
+        if (sessionStorage.getItem("crisiscope_intro_seen") === "1") {
+          intro.classList.add("intro-hidden");
+          video.pause();
+          return;
+        }
+      } catch (e) {}
+
+      // Muted autoplay is generally allowed by modern browsers.
+      video.play().catch(function () {
+        soundButton.textContent = "Play Intro";
+
+        // Let the user start playback manually if autoplay is blocked.
+        soundButton.onclick = function () {
+          if (finished) return;
+
+          video.muted = true;
+
+          video.play().then(function () {
+            soundButton.textContent = "Enable Sound";
+          }).catch(finishIntro);
+        };
+      });
+    })();
+  </script>
+
+  {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>

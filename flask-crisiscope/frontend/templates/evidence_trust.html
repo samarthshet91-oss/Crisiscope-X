@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 20px;">
+  <div class="card-header">
+    <div>
+      <h2 style="font-size: 18px; margin-bottom: 4px;">Evidence, Audit & Algorithmic Trust</h2>
+      <p style="font-size: 12px; color: var(--text-muted);">
+        Comprehensive provenance ledger, mathematical derivations, and verification proofs.
+      </p>
+    </div>
+    <span class="badge badge-green">AUDIT COMPLIANT</span>
+  </div>
+
+  <div class="grid-cols-12" style="margin-top: 10px;">
+    <!-- Provenance & Truth in AI Declaration -->
+    <div class="col-span-12">
+      <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-left:4px solid var(--accent-cyan); border-radius:6px; padding:14px 18px; margin-bottom:16px; font-size:12px; line-height:1.6;">
+        <strong style="color:var(--text-heading); font-size:13px;">Data Provenance & Scientific Integrity Declaration:</strong><br>
+        This application operates using synthetic demonstration fixtures based on urban Bengaluru geography for the IBM Z Datathon 2026.
+        All rainfall station records, road segment IDs, and topological dependencies are explicitly labeled with their classification status:
+        <span class="badge badge-blue">SYNTHETIC_FIXTURE</span> or <span class="badge badge-green">IMPORTED_OBSERVATION</span>.
+        No fabricated real-time telemetry or unverified infrastructure closures are represented as official real-world city emergencies.
+      </div>
+    </div>
+
+    <!-- Mathematical Formula 1: SSI -->
+    <div class="col-span-6">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Scenario Severity Index (SSI) Formulation</div>
+        </div>
+        <div style="font-size:12px; color:var(--text-secondary); line-height:1.5;">
+          The composite SSI (0–100) mathematically combines four normalized hydrological and graph components:
+          <pre style="background:var(--input-bg); padding:10px; border-radius:6px; margin:10px 0; font-size:11px; color:var(--accent-cyan);">
+SSI = clamp(5, 100, 
+  0.35 * (Rain / 320.0) +
+  0.30 * (Disruptions / 4.0) +
+  0.25 * (Isolated_Facilities / 3.0) +
+  0.10 * (Soil_Saturation) -
+  Mitigation_Credits
+)</pre>
+          <ul style="padding-left:16px; font-size:11px; color:var(--text-muted); display:flex; flex-direction:column; gap:4px;">
+            <li><strong>Mitigation Credits:</strong> Dewatering pumps (-7 pts), Drainage clearance (-5 pts), Preemptive rerouting (-4 pts).</li>
+            <li><strong>Rational Limits:</strong> Never drops below baseline 5 or exceeds physical maximum 100.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mathematical Formula 2: Logistic Regression -->
+    <div class="col-span-6">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Supervised Logistic Inundation Classifier</div>
+        </div>
+        <div style="font-size:12px; color:var(--text-secondary); line-height:1.5;">
+          Probability of acute flooding is calculated via the standard logistic sigmoid:
+          <pre style="background:var(--input-bg); padding:10px; border-radius:6px; margin:10px 0; font-size:11px; color:var(--accent-cyan);">
+P(Inundation) = 1 / (1 + exp(-z))
+z = β0 + β1*Rain_Intensity + β2*Cumulative_Rain 
+    + β3*(Elevation - 850) + β4*Soil_Saturation 
+    + β5*Drainage_Maintenance</pre>
+          <ul style="padding-left:16px; font-size:11px; color:var(--text-muted); display:flex; flex-direction:column; gap:4px;">
+            <li><strong>Deterministic Coefficients:</strong> Trained via scikit-learn LogisticRegression with L2 regularization.</li>
+            <li><strong>Explainability:</strong> Each feature's logit contribution is exposed directly in the UI.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

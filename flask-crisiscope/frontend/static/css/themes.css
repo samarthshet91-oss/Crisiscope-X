@@ -1,0 +1,107 @@
+/* ==========================================================================
+   CRISISCOPE X — Themes & Color Palettes
+   Single Source of Truth CSS Variable System for Light and Dark Modes
+   ========================================================================== */
+
+:root,
+[data-theme="dark"],
+html.dark {
+  --bg-primary: #060b14;
+  --bg-secondary: #0a1120;
+  --bg-tertiary: #0f192d;
+  --card-bg: #0c1424;
+  --card-hover: #121d33;
+  --border-color: #1e293b;
+  --border-subtle: #172033;
+  --border-focus: #06b6d4;
+
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-heading: #f8fafc;
+  --text-inverse: #0f172a;
+
+  --accent-cyan: #06b6d4;
+  --accent-cyan-subtle: rgba(6, 182, 212, 0.12);
+  --accent-blue: #3b82f6;
+  --accent-blue-subtle: rgba(59, 130, 246, 0.12);
+  --accent-amber: #f59e0b;
+  --accent-amber-subtle: rgba(245, 158, 11, 0.12);
+  --accent-red: #ef4444;
+  --accent-red-subtle: rgba(239, 68, 68, 0.12);
+  --accent-green: #10b981;
+  --accent-green-subtle: rgba(16, 185, 129, 0.12);
+  --accent-purple: #8b5cf6;
+
+  --badge-bg: #1e293b;
+  --badge-text: #cbd5e1;
+
+  --input-bg: #090e1a;
+  --input-border: #1e293b;
+  --input-text: #f1f5f9;
+
+  --grid-line: rgba(255, 255, 255, 0.04);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.6);
+
+  --sidebar-bg: #070d18;
+  --sidebar-active: #0f1b30;
+  --header-bg: rgba(10, 17, 32, 0.85);
+  --footer-bg: #050912;
+  --modal-overlay: rgba(3, 6, 12, 0.8);
+
+  --map-filter: brightness(0.85) invert(1) contrast(3) hue-rotate(200deg) saturate(0.35);
+  --map-tile-bg: #0b1324;
+}
+
+[data-theme="light"],
+html.light {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e2e8f0;
+  --card-bg: #ffffff;
+  --card-hover: #f8fafc;
+  --border-color: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --border-focus: #0284c7;
+
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-heading: #0f172a;
+  --text-inverse: #ffffff;
+
+  --accent-cyan: #0284c7;
+  --accent-cyan-subtle: rgba(2, 132, 199, 0.1);
+  --accent-blue: #2563eb;
+  --accent-blue-subtle: rgba(37, 99, 235, 0.1);
+  --accent-amber: #d97706;
+  --accent-amber-subtle: rgba(217, 119, 6, 0.1);
+  --accent-red: #dc2626;
+  --accent-red-subtle: rgba(220, 38, 38, 0.1);
+  --accent-green: #059669;
+  --accent-green-subtle: rgba(5, 150, 105, 0.1);
+  --accent-purple: #7c3aed;
+
+  --badge-bg: #e2e8f0;
+  --badge-text: #334155;
+
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --input-text: #0f172a;
+
+  --grid-line: rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+  --sidebar-bg: #ffffff;
+  --sidebar-active: #f1f5f9;
+  --header-bg: rgba(255, 255, 255, 0.9);
+  --footer-bg: #f8fafc;
+  --modal-overlay: rgba(15, 23, 42, 0.6);
+
+  --map-filter: none;
+  --map-tile-bg: #f1f5f9;
+}

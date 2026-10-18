@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="impact-assessment-view">
+  <div class="card" style="margin-bottom: 20px;">
+    <div class="card-header">
+      <div>
+        <h2 style="font-size: 18px; margin-bottom: 4px;">Impact Assessment & Critical Infrastructure Exposure</h2>
+        <p style="font-size: 12px; color: var(--text-muted);">
+          Cross-asset vulnerability audit evaluating hospital generator elevations, power feeder reliability, and municipal shelter capacities.
+        </p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <a href="/command-center" class="btn btn-primary btn-sm">Emergency Controller</a>
+        <a href="/cascade-vision" class="btn btn-secondary btn-sm">3D Cascade View</a>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 10px;">
+      <div class="metric-box">
+        <div class="metric-label">Hospitals Severed</div>
+        <div id="impact-hospitals-severed" class="metric-value" style="color:var(--accent-red);">--</div>
+        <div class="metric-trend">Zero ambulance access corridors</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Synthetic Runoff Volume</div>
+        <div id="impact-runoff-volume" class="metric-value">-- m³</div>
+        <div class="metric-trend">Hydraulic overland discharge</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Effective Soil Saturation</div>
+        <div id="impact-soil-saturation" class="metric-value">--%</div>
+        <div class="metric-trend">Catchment infiltration index</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-cols-12">
+    <!-- Facilities Status Table -->
+    <div class="col-span-8">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Critical Care Facilities & Emergency Infrastructure Audit</div>
+          <span class="badge badge-cyan">PHYSICAL ELEVATION SURVEY</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Facility Name & ID</th>
+                <th>Classification</th>
+                <th>Capacity</th>
+                <th>Generator Elevation</th>
+                <th>Reachability Status</th>
+              </tr>
+            </thead>
+            <tbody id="impact-facilities-tbody">
+              <!-- Populated by impact_assessment.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Severed Corridors & Vulnerability Insights -->
+    <div class="col-span-4">
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="card-header">
+          <div class="card-title">Severed Corridors Impact</div>
+        </div>
+        <div id="impact-corridors-list">
+          <!-- Populated by impact_assessment.js -->
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Substation Feeder Vulnerability</div>
+        </div>
+        <div style="font-size:12px; color:var(--text-secondary); line-height:1.5;">
+          <p style="margin-bottom:8px;">
+            <strong>Koramangala 220kV Master Substation</strong> is situated at elevation +0.8m. In events exceeding 80 mm/hr, localized waterlogging risks forcing emergency busbar isolation.
+          </p>
+          <p>
+            When busbars trip, backup diesel generators at <strong>St. John's Hospital</strong> (generator elevation +0.4m) become single points of failure.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 20px;">
+  <div class="card-header">
+    <div>
+      <h2 style="font-size: 18px; margin-bottom: 4px;">Digital Twin Lab — Spatial Hydrology Model</h2>
+      <p style="font-size: 12px; color: var(--text-muted);">
+        Interactive telemetry array, physical road elevations, and catchment surface runoff dynamics for Bengaluru.
+      </p>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <a href="/command-center" class="btn btn-secondary btn-sm">&larr; Return to Command Center</a>
+      <a href="/cascade-vision" class="btn btn-primary btn-sm">Switch to 3D Cascade Vision</a>
+    </div>
+  </div>
+
+  <div class="map-view-wrapper" style="height: 680px;">
+    <div id="crisiscope-map" style="width:100%; height:100%;"></div>
+  </div>
+</div>
+
+<div class="grid-cols-12">
+  <div class="col-span-6">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Telemetric Rain Gauge Array Status</div>
+        <span class="badge badge-green">8 STATIONS ONLINE</span>
+      </div>
+      <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">
+        Synthetic ultrasonic Doppler telemetric gauges feeding real-time precipitation intensity and cumulative soil surcharge into the hydrological calculation engine.
+      </div>
+      <div style="max-height: 260px; overflow-y: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Station ID</th>
+              <th>Location</th>
+              <th>Intensity</th>
+              <th>Accumulated</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="font-mono">SYNTH-STN-01</td>
+              <td>Hebbal Lake Basin</td>
+              <td class="font-mono">72.0 mm/hr</td>
+              <td class="font-mono">142.5 mm</td>
+              <td><span class="badge badge-green">OPERATIONAL</span></td>
+            </tr>
+            <tr>
+              <td class="font-mono">SYNTH-STN-02</td>
+              <td>Bellandur Wetland</td>
+              <td class="font-mono" style="color:var(--accent-red);">94.0 mm/hr</td>
+              <td class="font-mono">188.0 mm</td>
+              <td><span class="badge badge-red">SURCHARGED</span></td>
+            </tr>
+            <tr>
+              <td class="font-mono">SYNTH-STN-03</td>
+              <td>Silk Board Junction</td>
+              <td class="font-mono" style="color:var(--accent-red);">88.0 mm/hr</td>
+              <td class="font-mono">172.4 mm</td>
+              <td><span class="badge badge-red">CRITICAL</span></td>
+            </tr>
+            <tr>
+              <td class="font-mono">SYNTH-STN-04</td>
+              <td>Majestic Urban Core</td>
+              <td class="font-mono">54.0 mm/hr</td>
+              <td class="font-mono">110.2 mm</td>
+              <td><span class="badge badge-green">OPERATIONAL</span></td>
+            </tr>
+            <tr>
+              <td class="font-mono">SYNTH-STN-05</td>
+              <td>Koramangala 80ft Ridge</td>
+              <td class="font-mono" style="color:var(--accent-amber);">82.0 mm/hr</td>
+              <td class="font-mono">164.8 mm</td>
+              <td><span class="badge badge-amber">WARNING</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-span-6">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Catchment Topography & Drainage Basins</div>
+        <span class="badge badge-cyan">TOPOGRAPHIC GIS</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px; font-size:12px;">
+        <div style="background:var(--bg-secondary); padding:10px 14px; border-radius:6px; border-left:4px solid var(--accent-cyan);">
+          <div style="font-weight:700;">Bellandur Drainage Basin (Area: 38 km²)</div>
+          <div style="color:var(--text-secondary); margin-top:2px;">
+            Primary low-lying terminal reservoir receiving runoff from Outer Ring Road, Koramangala, and HAL valleys. Susceptible to severe backflow surges when culverts choke.
+          </div>
+        </div>
+
+        <div style="background:var(--bg-secondary); padding:10px 14px; border-radius:6px; border-left:4px solid var(--accent-blue);">
+          <div style="font-weight:700;">Hebbal Valley System (Area: 29 km²)</div>
+          <div style="color:var(--text-secondary); margin-top:2px;">
+            Northern arterial catchment with elevated flyovers. Fast runoff velocity creates acute flash flooding risks at Nagawara and Hebbal interchanges.
+          </div>
+        </div>
+
+        <div style="background:var(--bg-secondary); padding:10px 14px; border-radius:6px; border-left:4px solid var(--accent-amber);">
+          <div style="font-weight:700;">Vrishabhavathi Basin (Area: 44 km²)</div>
+          <div style="color:var(--text-secondary); margin-top:2px;">
+            South-western watershed draining central Bengaluru. High baseline urban density with extensive impermeable surfaces.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

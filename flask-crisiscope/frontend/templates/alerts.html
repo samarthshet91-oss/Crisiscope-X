@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 20px;">
+  <div class="card-header">
+    <div>
+      <h2 style="font-size: 18px; margin-bottom: 4px;">Alerts & Operational Incidents Log</h2>
+      <p style="font-size: 12px; color: var(--text-muted);">
+        Deterministic rules engine synthesizing alerts from active telemetry, physical road chokepoints, and graph reachability.
+      </p>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <a href="/command-center" class="btn btn-primary btn-sm">Emergency Controller</a>
+      <a href="/response-lab" class="btn btn-secondary btn-sm">Recommended Actions &rarr;</a>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 14px; margin-bottom: 16px; flex-wrap: wrap;">
+    <div class="metric-box" style="flex:1; min-width:140px;">
+      <div class="metric-label">Total Active Alerts</div>
+      <div id="alert-count-total" class="metric-value">--</div>
+    </div>
+    <div class="metric-box" style="flex:1; min-width:140px;">
+      <div class="metric-label" style="color:var(--accent-red);">Critical Inundations</div>
+      <div id="alert-count-critical" class="metric-value" style="color:var(--accent-red);">--</div>
+    </div>
+    <div class="metric-box" style="flex:1; min-width:140px;">
+      <div class="metric-label" style="color:var(--accent-amber);">Hydraulic Advisories</div>
+      <div id="alert-count-warning" class="metric-value" style="color:var(--accent-amber);">--</div>
+    </div>
+  </div>
+
+  <div id="alerts-feed-list">
+    <!-- Populated by alerts.js -->
+  </div>
+</div>
+{% endblock %}

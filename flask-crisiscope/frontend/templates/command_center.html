@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Metric KPI Cards Row -->
+<div class="grid-cols-12" style="margin-bottom: 20px;">
+  <div class="col-span-12" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
+    <div class="metric-box">
+      <div class="metric-label">
+        <span>Severity Index (SSI)</span>
+        <span class="badge badge-amber">COMPOSITE</span>
+      </div>
+      <div id="metric-ssi-val" class="metric-value" style="color:var(--accent-amber);">--/100</div>
+      <div class="metric-trend">Dynamic hydraulic composite score</div>
+    </div>
+
+    <div class="metric-box">
+      <div class="metric-label">
+        <span>Accumulated Rain</span>
+        <span class="badge badge-cyan">TELEMETRY</span>
+      </div>
+      <div id="metric-rain-val" class="metric-value">-- mm</div>
+      <div class="metric-trend">Convective load over catchment</div>
+    </div>
+
+    <div class="metric-box">
+      <div class="metric-label">
+        <span>Soil Saturation</span>
+        <span class="badge badge-blue">HYDROLOGY</span>
+      </div>
+      <div id="metric-sat-val" class="metric-value">--%</div>
+      <div class="metric-trend">Infiltration exhaustion threshold</div>
+    </div>
+
+    <div class="metric-box">
+      <div class="metric-label">
+        <span>Runoff Volume</span>
+        <span class="badge badge-cyan">SURCHARGE</span>
+      </div>
+      <div id="metric-runoff-val" class="metric-value">-- M m³</div>
+      <div class="metric-trend">Macro-drainage conveyance load</div>
+    </div>
+
+    <div class="metric-box">
+      <div class="metric-label">
+        <span>Severed Corridors</span>
+        <span class="badge badge-red">TOPOLOGY</span>
+      </div>
+      <div id="metric-severed-val" class="metric-value" style="color:var(--accent-red);">--</div>
+      <div class="metric-trend">Physical arterial chokepoints</div>
+    </div>
+
+    <div class="metric-box">
+      <div class="metric-label">
+        <span>Isolated Facilities</span>
+        <span class="badge badge-red">CRITICAL</span>
+      </div>
+      <div id="metric-isolated-val" class="metric-value" style="color:var(--accent-red);">--</div>
+      <div class="metric-trend">Hospitals with severed ambulance routes</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Operational Layout -->
+<div class="grid-cols-12">
+  <!-- Left Column: Emergency Situation Controller -->
+  <div class="col-span-4" id="scenario-controller-container">
+    <div class="card controller-card" style="margin-bottom: 16px;">
+      <div class="card-header">
+        <div class="card-title">
+          <span>⚡</span>
+          <span>Emergency Situation Controller</span>
+        </div>
+        <span class="badge badge-cyan">RATIONAL ENGINE</span>
+      </div>
+
+      <!-- Preset Selector -->
+      <div class="form-group">
+        <label class="form-label" for="scenario-preset-select">
+          <span>Predefined Hypothesis Preset</span>
+        </label>
+        <select id="scenario-preset-select" class="form-select">
+          {% for p in presets %}
+          <option value="{{ p.id }}" {% if p.id == active_scenario.id %}selected{% endif %}>{{ p.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Precipitation Intensity Slider -->
+      <div class="form-group">
+        <label class="form-label" for="input-rainfall-intensity">
+          <span>Precipitation Rate</span>
+          <span id="val-rainfall-intensity" class="font-mono text-muted">{{ active_scenario.rainfallIntensityMmPerHour }} mm/hr</span>
+        </label>
+        <input type="range" id="input-rainfall-intensity" class="form-range" min="15" max="180" step="5" value="{{ active_scenario.rainfallIntensityMmPerHour }}" />
+      </div>
+
+      <!-- Storm Duration Slider -->
+      <div class="form-group">
+        <label class="form-label" for="input-rainfall-duration">
+          <span>Storm Duration</span>
+          <span id="val-rainfall-duration" class="font-mono text-muted">{{ active_scenario.rainfallDurationHours }} hrs</span>
+        </label>
+        <input type="range" id="input-rainfall-duration" class="form-range" min="1" max="24" step="1" value="{{ active_scenario.rainfallDurationHours }}" />
+      </div>
+
+      <!-- Catchment Zone Selection -->
+      <div class="form-group">
+        <label class="form-label" for="input-catchment-zone">Catchment Basin</label>
+        <select id="input-catchment-zone" class="form-select">
+          <option value="Bellandur Basin" {% if active_scenario.catchmentZone == 'Bellandur Basin' %}selected{% endif %}>Bellandur Basin (38 km²)</option>
+          <option value="Hebbal Valley" {% if active_scenario.catchmentZone == 'Hebbal Valley' %}selected{% endif %}>Hebbal Valley (29 km²)</option>
+          <option value="Vrishabhavathi Basin" {% if active_scenario.catchmentZone == 'Vrishabhavathi Basin' %}selected{% endif %}>Vrishabhavathi Basin (44 km²)</option>
+          <option value="Koramangala Storm Corridor" {% if active_scenario.catchmentZone == 'Koramangala Storm Corridor' %}selected{% endif %}>Koramangala Storm Corridor (18 km²)</option>
+        </select>
+      </div>
+
+      <!-- Rainfall Profile Selection -->
+      <div class="form-group">
+        <label class="form-label" for="input-rainfall-profile">Rainfall Distribution Profile</label>
+        <select id="input-rainfall-profile" class="form-select">
+          <option value="Convective Peak" {% if active_scenario.rainfallProfile == 'Convective Peak' %}selected{% endif %}>Convective Peak (Aggressive Front-load)</option>
+          <option value="Uniform Steady" {% if active_scenario.rainfallProfile == 'Uniform Steady' %}selected{% endif %}>Uniform Steady (Monsoon Continuous)</option>
+          <option value="Front-loaded Burst" {% if active_scenario.rainfallProfile == 'Front-loaded Burst' %}selected{% endif %}>Front-loaded Burst (Flash Cloudburst)</option>
+        </select>
+      </div>
+
+      <!-- Active Mitigation Toggles -->
+      <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-color);">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">
+          Active Tactical Countermeasures
+        </div>
+
+        <label class="switch-label">
+          <span>Deploy Heavy Amphibious Dewatering Pumps</span>
+          <input type="checkbox" id="toggle-mitigation-pumps" class="switch-input" {% if active_scenario.mitigationPumpsDeployed %}checked{% endif %} />
+          <span class="switch-track"></span>
+        </label>
+
+        <label class="switch-label">
+          <span>Continuous Rajakaluve Desilting Active</span>
+          <input type="checkbox" id="toggle-drainage-clearance" class="switch-input" {% if active_scenario.drainageClearanceActive %}checked{% endif %} />
+          <span class="switch-track"></span>
+        </label>
+
+        <label class="switch-label">
+          <span>Emergency Traffic Contraflow Rerouting</span>
+          <input type="checkbox" id="toggle-traffic-reroute" class="switch-input" {% if active_scenario.trafficPreemptiveRerouting %}checked{% endif %} />
+          <span class="switch-track"></span>
+        </label>
+      </div>
+
+      <!-- Declared Road Chokepoints -->
+      <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-color);">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">
+          Declared Arterial Chokepoints
+        </div>
+        <div id="disruptions-checkbox-list">
+          <!-- Populated by emergency_controller.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Interactive Map & Live Incidents Feed -->
+  <div class="col-span-8">
+    <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 16px;">
+      <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+        <div class="card-title">
+          <span>🗺️</span>
+          <span>Bengaluru Urban Flood Spatial Twin</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <a href="/cascade-vision" class="btn btn-sm btn-primary">Open 3D Cascade Vision</a>
+          <a href="/response-lab" class="btn btn-sm btn-secondary">Response Lab</a>
+        </div>
+      </div>
+
+      <!-- Leaflet Map Container -->
+      <div class="map-view-wrapper" style="border:none; border-radius:0;">
+        <div id="crisiscope-map" style="width:100%; height:100%;"></div>
+
+        <!-- Floating Map Overlay Legend -->
+        <div class="map-floating-panel">
+          <div style="font-weight:700; margin-bottom:6px; color:var(--text-heading);">Active Spatial Layers</div>
+          <div style="display:flex; flex-direction:column; gap:4px; font-size:11px;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#06b6d4;"></span>
+              <span>Telemetric Rain Gauges</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#10b981;"></span>
+              <span>Reachable Hospitals & Shelters</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#ef4444;"></span>
+              <span>Severed Hospitals / Corridors</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="display:inline-block; width:12px; height:2px; background:#ef4444; border-top:2px dashed #ef4444;"></span>
+              <span>Disrupted Road Corridors</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Incident Alert Stream Preview -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>🚨</span>
+          <span>Active Incident Alerts Feed</span>
+        </div>
+        <a href="/alerts" class="btn btn-sm btn-secondary">View Full Incident Log &rarr;</a>
+      </div>
+      <div id="alerts-feed-list">
+        <!-- Rendered by alerts.js -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

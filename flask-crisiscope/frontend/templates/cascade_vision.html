@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Top Header & Status Card -->
+<div class="card" style="margin-bottom: 16px;">
+  <div class="card-header" style="margin-bottom: 0;">
+    <div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+        <h2 style="font-size: 18px; margin: 0;">Cascade Vision 3D — Bengaluru Geographical Disaster Map</h2>
+        <span class="badge badge-cyan">3D GEOGRAPHICAL PERSPECTIVE</span>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted); margin: 0;">
+        Real geographical map of Bengaluru (12.9716°N, 77.5946°E) with 3D building extrusions, arterial highway corridors, and anchored infrastructure dependency arcs.
+      </p>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <a href="/command-center" class="btn btn-secondary btn-sm">&larr; Command Center</a>
+      <a href="/digital-twin" class="btn btn-secondary btn-sm">2D Hydrology Twin</a>
+    </div>
+  </div>
+</div>
+
+<!-- Main 3D Geographical Map Stage -->
+<div class="cascade-container" style="height: 680px; margin-bottom: 20px;">
+  <!-- Map Mount Point for MapLibre GL JS -->
+  <div id="cascade-map-mount"></div>
+
+  <!-- Sleek Floating Map Controls Toolbar -->
+  <div class="cascade-toolbar">
+    <!-- 2D / 3D Perspective Toggle -->
+    <button id="btn-toggle-2d-3d" class="btn btn-primary active" title="Toggle between 3D Tilted Perspective and 2D Planimetric View">
+      <span>🌐 View: <strong>3D Perspective</strong></span>
+    </button>
+
+    <!-- Reset Camera -->
+    <button id="btn-reset-cascade-camera" class="btn btn-secondary" title="Reset camera to Bengaluru center with 3D tilt">
+      🎥 Reset View
+    </button>
+
+    <!-- Layer Visibility Toggles -->
+    <div class="cascade-layer-toggles">
+      <span style="font-weight:700; color:var(--text-heading); margin-right:4px;">Layers:</span>
+      <label class="cascade-layer-toggle" title="Toggle 3D extruded building models">
+        <input type="checkbox" id="toggle-layer-buildings" checked />
+        <span>3D Buildings</span>
+      </label>
+      <label class="cascade-layer-toggle" title="Toggle critical care facilities & emergency hubs">
+        <input type="checkbox" id="toggle-layer-infra" checked />
+        <span>Infrastructure</span>
+      </label>
+      <label class="cascade-layer-toggle" title="Toggle physical arterial road segments">
+        <input type="checkbox" id="toggle-layer-roads" checked />
+        <span>Roads</span>
+      </label>
+      <label class="cascade-layer-toggle" title="Toggle topological dependency arcs">
+        <input type="checkbox" id="toggle-layer-dependencies" checked />
+        <span>Dependencies</span>
+      </label>
+      <label class="cascade-layer-toggle" title="Toggle hypothetical catchment hazard basins">
+        <input type="checkbox" id="toggle-layer-catchments" checked />
+        <span>Catchments</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Loading & Diagnostics Indicator -->
+  <div id="cascade-loading-indicator" style="position:absolute; inset:0; background:rgba(7,13,24,0.75); display:none; align-items:center; justify-content:center; flex-direction:column; gap:10px; z-index:30; backdrop-filter:blur(4px);">
+    <div class="animate-spin" style="width:34px; height:34px; border:3px solid var(--accent-cyan); border-top-color:transparent; border-radius:50%;"></div>
+    <div style="font-size:13px; font-weight:700; color:#f8fafc;">Loading Bengaluru 3D Geospatial Twin & Vector Basemap...</div>
+  </div>
+
+  <!-- Floating Map Legend -->
+  <div class="cascade-legend">
+    <div style="font-weight:700; color:var(--text-heading); border-bottom:1px solid var(--border-color); padding-bottom:4px; margin-bottom:4px;">
+      Geographical Map Legend
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot" style="background:#0284c7;"></span>
+      <span>Reachable Trauma Hospital (🏥)</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot" style="background:#ef4444;"></span>
+      <span>Isolated Facility / Severed Node</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot" style="background:#f59e0b;"></span>
+      <span>BESCOM Master Substation (⚡)</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot" style="background:#8b5cf6;"></span>
+      <span>Municipal Relief Shelter (⛺)</span>
+    </div>
+    <div class="legend-item">
+      <span style="display:inline-block; width:16px; height:3px; background:#10b981; border-radius:1px;"></span>
+      <span>Intact Road / Dependency Arc</span>
+    </div>
+    <div class="legend-item">
+      <span style="display:inline-block; width:16px; height:3px; background:#ef4444; border-top:2px dashed #ef4444;"></span>
+      <span>Severed Corridor / Chokepoint</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot" style="background:#06b6d4; border-radius:2px;"></span>
+      <span>3D Urban Building Extrusions</span>
+    </div>
+    <div style="font-size:9.5px; color:var(--text-muted); border-top:1px solid var(--border-subtle); padding-top:4px; margin-top:2px;">
+      Right-Click + Drag: Tilt & Rotate 3D Space<br>
+      Scroll: Zoom &bull; Left-Click: Pan / Inspect
+    </div>
+  </div>
+
+  <!-- Interactive Asset Inspector Sidebar Panel -->
+  <div id="cascade-inspector" class="cascade-inspector-panel">
+    <!-- Populated dynamically when clicking infrastructure markers, roads, or arcs -->
+  </div>
+</div>
+
+<!-- Integrated Scenario Controls & Cascade Propagation Details -->
+<div class="grid-cols-12">
+  <!-- Left: Embedded Quick Scenario Tuning Controller -->
+  <div class="col-span-4" id="scenario-controller-container">
+    <div class="card controller-card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>⚡</span>
+          <span>Emergency Scenario Controller</span>
+        </div>
+        <span class="badge badge-cyan">LIVE 3D SYNC</span>
+      </div>
+
+      <!-- Preset Selector -->
+      <div class="form-group">
+        <label class="form-label" for="scenario-preset-select">Active Scenario Preset</label>
+        <select id="scenario-preset-select" class="form-select">
+          {% for p in presets %}
+          <option value="{{ p.id }}" {% if p.id == active_scenario.id %}selected{% endif %}>{{ p.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Precipitation Slider -->
+      <div class="form-group">
+        <label class="form-label" for="input-rainfall-intensity">
+          <span>Precipitation Rate</span>
+          <span id="val-rainfall-intensity" class="font-mono text-muted">{{ active_scenario.rainfallIntensityMmPerHour }} mm/hr</span>
+        </label>
+        <input type="range" id="input-rainfall-intensity" class="form-range" min="15" max="180" step="5" value="{{ active_scenario.rainfallIntensityMmPerHour }}" />
+      </div>
+
+      <!-- Storm Duration Slider -->
+      <div class="form-group">
+        <label class="form-label" for="input-rainfall-duration">
+          <span>Storm Duration</span>
+          <span id="val-rainfall-duration" class="font-mono text-muted">{{ active_scenario.rainfallDurationHours }} hrs</span>
+        </label>
+        <input type="range" id="input-rainfall-duration" class="form-range" min="1" max="24" step="1" value="{{ active_scenario.rainfallDurationHours }}" />
+      </div>
+
+      <!-- Active Mitigations -->
+      <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">
+          Active Countermeasures
+        </div>
+
+        <label class="switch-label">
+          <span>Deploy Heavy Dewatering Pumps</span>
+          <input type="checkbox" id="toggle-mitigation-pumps" class="switch-input" {% if active_scenario.mitigationPumpsDeployed %}checked{% endif %} />
+          <span class="switch-track"></span>
+        </label>
+
+        <label class="switch-label">
+          <span>Rajakaluve Silt Clearance</span>
+          <input type="checkbox" id="toggle-drainage-clearance" class="switch-input" {% if active_scenario.drainageClearanceActive %}checked{% endif %} />
+          <span class="switch-track"></span>
+        </label>
+
+        <label class="switch-label">
+          <span>Emergency Traffic Rerouting</span>
+          <input type="checkbox" id="toggle-traffic-reroute" class="switch-input" {% if active_scenario.trafficPreemptiveRerouting %}checked{% endif %} />
+          <span class="switch-track"></span>
+        </label>
+      </div>
+
+      <!-- Declared Arterial Disruption Checkboxes -->
+      <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">
+          Declared Roadway Chokepoints
+        </div>
+        <div id="disruptions-checkbox-list">
+          <!-- Populated by emergency_controller.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Cascade Propagation Timeline & Impact Summary -->
+  <div class="col-span-8">
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="card-header">
+        <div class="card-title">Geographical Cascade Analysis & Propagation</div>
+        <span class="badge badge-amber">BREADTH-FIRST REACHABILITY</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+        <div class="metric-box">
+          <div class="metric-label">Severed Dependency Corridors</div>
+          <div id="cascade-severed-count" class="metric-value" style="color:var(--accent-red);">--</div>
+          <div class="metric-trend">Physical chokepoint impacts</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Trauma Facilities Cut Off</div>
+          <div id="cascade-isolated-count" class="metric-value" style="color:var(--accent-red);">--</div>
+          <div class="metric-trend">Hospitals with zero intact ambulance routes</div>
+        </div>
+      </div>
+
+      <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
+        Topological graph traversal initiates from primary command hubs (Majestic Central & Hebbal Flyover).
+        When intermediate roadway edges sever, downstream facilities lose reachability.
+      </div>
+
+      <div id="cascade-steps-timeline" style="max-height: 250px; overflow-y: auto;">
+        <!-- Populated dynamically by cascade_vision.js -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

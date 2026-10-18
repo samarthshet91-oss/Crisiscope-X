@@ -1,0 +1,16 @@
+{
+  "name": "crisiscope-x-linuxone",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "python3 app.py",
+    "build": "python3 -c \"import py_compile; py_compile.compile('app.py')\"",
+    "start": "python3 app.py",
+    "lint": "python3 -m py_compile app.py",
+    "test": "python3 -m unittest discover tests"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  }
+}

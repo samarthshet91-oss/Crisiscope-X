@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 20px;">
+  <div class="card-header">
+    <div>
+      <h2 style="font-size: 18px; margin-bottom: 4px;">Response Lab — Decision-Support Action Strategies</h2>
+      <p style="font-size: 12px; color: var(--text-muted);">
+        Explainable tactical countermeasures synthesized dynamically from active hydraulic load, road severance, and critical asset isolation.
+      </p>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <a href="/command-center" class="btn btn-primary btn-sm">Emergency Controller</a>
+      <a href="/alerts" class="btn btn-secondary btn-sm">Active Alerts Feed</a>
+    </div>
+  </div>
+
+  <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:6px; padding:12px 16px; margin-bottom:16px; font-size:12px; color:var(--text-secondary);">
+    <strong style="color:var(--text-heading);">Executive Decision-Support Notice:</strong>
+    These operational recommendations are mathematically derived from current scenario parameters and topological reachability. They provide structured rationale and evidence for civic incident commanders.
+  </div>
+
+  <div id="response-options-list">
+    <!-- Populated by response_lab.js -->
+  </div>
+</div>
+{% endblock %}
